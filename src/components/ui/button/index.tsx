@@ -1,6 +1,5 @@
 import { handleActivation } from "@/utils/accessibility";
 import MuiButton from "@mui/material/Button";
-import { getAriaButtonProps } from "@/utils/accessibility";
 
 export type ButtonVariant = "primary" | "secondary" | "tertiary";
 export type ButtonSize = "sm" | "md";

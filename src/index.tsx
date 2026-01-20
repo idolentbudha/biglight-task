@@ -15,8 +15,7 @@ export function App() {
         <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
         <main>
           <Router>
-            <Route path="/" component={Home} />
-            <Route path="/login" component={Login} />
+            <Route path="/" component={Login} />
             <Route default component={NotFound} />
           </Router>
         </main>

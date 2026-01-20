@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/preact";
-import { Dropdown, DropdownProps } from "../../Dropdown";
+import { Dropdown, DropdownProps } from "./index";
 import { useState } from "preact/hooks";
 import { StyledEngineProvider } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";

@@ -125,21 +125,6 @@ export function InputField({
             "aria-invalid": ariaProps["aria-invalid"] === "true",
             "aria-describedby": ariaProps["aria-describedby"],
           }}
-          // className={`
-          //       w-full px-md py-sm
-          //       font-body text-body-md
-          //       rounded-lg
-          //       border-2 ${getBorderColor()}
-          //       transition-colors duration-200
-          //       outline-none
-          //       ${
-          //         disabled
-          //           ? "bg-disabled-light text-disabled cursor-not-allowed"
-          //           : "bg-secondary text-body"
-          //       }
-          //       ${!disabled && "hover:border-border-secondary"}
-          //       placeholder:text-passive
-          //     `}
           className={`rounded-lg ${disabled ? "bg-disabled-dark" : "bg-secondary"}`}
           slotProps={{
             notchedOutline: {

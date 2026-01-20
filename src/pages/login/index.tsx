@@ -1,6 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 
-import LoginCard from "@components/login/LoginCard";
+import LoginCard from "@/components/login/card";
 import Typography from "@/components/ui/typography";
 import Dropdown from "@/components/ui/dropdown";
 import InputField from "@/components/ui/inputfield";
