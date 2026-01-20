@@ -16,12 +16,96 @@
 
 @config '../tailwind.config.js';
 
-/* set fonts */
-body {
-  font-family: var(--font-font-family-paragraph), system-ui, sans-serif;
-  font-size: var(--font-size-body-md);
-  font-weight: 400;
-  line-height: var(--line-height-body-md);
-  color: var(--text-colour-body);
-  background-color: var(--surface-colour-page);
+/* Base typography styles */
+@layer base {
+  body {
+    font-family: var(--font-font-family-paragraph), system-ui, sans-serif;
+    font-size: var(--font-size-body-md);
+    font-weight: 400;
+    line-height: var(--line-height-body-md);
+    color: var(--text-colour-body);
+    background-color: var(--surface-colour-page);
+  }
+
+  /* Headings */
+  h1 {
+    font-family: var(--font-font-family-headings), system-ui, sans-serif;
+    font-size: var(--font-size-heading-h1);
+    line-height: var(--line-height-heading-h1);
+    font-weight: 600;
+    color: var(--text-colour-headings);
+    margin-bottom: var(--spacing-md);
+  }
+
+  h2 {
+    font-family: var(--font-font-family-headings), system-ui, sans-serif;
+    font-size: var(--font-size-heading-h2);
+    line-height: var(--line-height-heading-h2);
+    font-weight: 600;
+    color: var(--text-colour-headings);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  h3 {
+    font-family: var(--font-font-family-headings), system-ui, sans-serif;
+    font-size: var(--font-size-heading-h3);
+    line-height: var(--line-height-heading-h3);
+    font-weight: 600;
+    color: var(--text-colour-headings);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  h4 {
+    font-family: var(--font-font-family-headings), system-ui, sans-serif;
+    font-size: var(--font-size-heading-h4);
+    line-height: var(--line-height-heading-h4);
+    font-weight: 600;
+    color: var(--text-colour-headings);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  h5 {
+    font-family: var(--font-font-family-headings), system-ui, sans-serif;
+    font-size: var(--font-size-heading-h5);
+    line-height: var(--line-height-heading-h5);
+    font-weight: 600;
+    color: var(--text-colour-headings);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  h6 {
+    font-family: var(--font-font-family-headings), system-ui, sans-serif;
+    font-size: var(--font-size-heading-h6);
+    line-height: var(--line-height-heading-h6);
+    font-weight: 600;
+    color: var(--text-colour-headings);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  /* Paragraphs */
+  p {
+    font-family: var(--font-font-family-paragraph), system-ui, sans-serif;
+    font-size: var(--font-size-body-md);
+    line-height: var(--line-height-body-md);
+    color: var(--text-colour-body);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  /* Small text */
+  small {
+    font-size: var(--font-size-body-sm);
+    line-height: var(--line-height-body-sm);
+  }
+
+  /* Strong and bold */
+  strong,
+  b {
+    font-weight: 600;
+  }
+
+  /* Emphasis */
+  em,
+  i {
+    font-style: italic;
+  }
 }
