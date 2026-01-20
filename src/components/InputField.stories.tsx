@@ -1,0 +1,276 @@
+import type { Meta, StoryObj } from "@storybook/preact";
+import { InputField, InputFieldProps } from "./InputField";
+import { useState } from "preact/hooks";
+import { StyledEngineProvider } from "@mui/material/styles";
+import GlobalStyles from "@mui/material/GlobalStyles";
+
+const meta = {
+  title: "Components/InputField",
+  component: InputField,
+  decorators: [
+    (Story) => (
+      <StyledEngineProvider enableCssLayer>
+        <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
+        <Story />
+      </StyledEngineProvider>
+    ),
+  ],
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+  argTypes: {
+    label: {
+      control: "text",
+      description: "Label text displayed above the input",
+    },
+    placeholder: {
+      control: "text",
+      description: "Placeholder text shown when input is empty",
+    },
+    value: {
+      control: "text",
+      description: "Current value of the input (controlled)",
+    },
+    disabled: {
+      control: "boolean",
+      description: "Whether the input is disabled",
+    },
+    state: {
+      control: "select",
+      options: ["default", "error", "success"],
+      description: "Visual state of the input",
+    },
+    type: {
+      control: "select",
+      options: ["text", "email", "password", "number", "tel", "url"],
+      description: "HTML input type",
+    },
+    required: {
+      control: "boolean",
+      description: "Whether the input is required",
+    },
+  },
+} satisfies Meta<InputFieldProps>;
+
+export default meta;
+type Story = StoryObj<InputFieldProps>;
+
+// Default state
+export const Default: Story = {
+  args: {
+    label: "Email",
+    placeholder: "Enter your email",
+  },
+};
+
+// With value (filled)
+export const Filled: Story = {
+  args: {
+    label: "Email",
+    placeholder: "Enter your email",
+    value: "user@example.com",
+  },
+};
+
+// Error state
+export const Error: Story = {
+  args: {
+    label: "Email",
+    placeholder: "Enter your email",
+    value: "invalid-email",
+    state: "error",
+  },
+};
+
+// Success state
+export const Success: Story = {
+  args: {
+    label: "Email",
+    placeholder: "Enter your email",
+    value: "user@example.com",
+    state: "success",
+  },
+};
+
+// Disabled state
+export const Disabled: Story = {
+  args: {
+    label: "Email",
+    placeholder: "Enter your email",
+    value: "user@example.com",
+    disabled: true,
+  },
+};
+
+// Without label
+export const WithoutLabel: Story = {
+  args: {
+    placeholder: "Search...",
+  },
+};
+
+// Password input
+export const Password: Story = {
+  args: {
+    label: "Password",
+    placeholder: "Enter your password",
+    type: "password",
+  },
+};
+
+// Interactive example with state management
+export const Interactive: Story = {
+  render: () => {
+    const [value, setValue] = useState("");
+    const [state, setState] = useState<"default" | "error" | "success">(
+      "default",
+    );
+
+    const handleChange = (newValue: string) => {
+      setValue(newValue);
+
+      // Simple email validation
+      if (newValue.length === 0) {
+        setState("default");
+      } else if (!newValue.includes("@")) {
+        setState("error");
+      } else {
+        setState("success");
+      }
+    };
+
+    return (
+      <InputField
+        label="Email (with validation)"
+        placeholder="Enter your email"
+        value={value}
+        state={state}
+        onChange={handleChange}
+        required={true}
+      />
+    );
+  },
+};
+
+// All states showcase
+export const AllStates: Story = {
+  render: () => (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "32px",
+        width: "800px",
+        padding: "20px",
+      }}
+    >
+      <div>
+        <h3
+          style={{
+            marginBottom: "16px",
+            fontSize: "16px",
+            fontWeight: 600,
+            color: "var(--text-colour-headings)",
+          }}
+        >
+          Default State
+        </h3>
+        <InputField label="Email" placeholder="Enter your email" />
+      </div>
+
+      <div>
+        <h3
+          style={{
+            marginBottom: "16px",
+            fontSize: "16px",
+            fontWeight: 600,
+            color: "var(--text-colour-headings)",
+          }}
+        >
+          Filled
+        </h3>
+        <InputField
+          label="Email"
+          placeholder="Enter your email"
+          value="user@example.com"
+        />
+      </div>
+
+      <div>
+        <h3
+          style={{
+            marginBottom: "16px",
+            fontSize: "16px",
+            fontWeight: 600,
+            color: "var(--text-colour-headings)",
+          }}
+        >
+          Error State
+        </h3>
+        <InputField
+          label="Email"
+          placeholder="Enter your email"
+          value="invalid-email"
+          state="error"
+        />
+      </div>
+
+      <div>
+        <h3
+          style={{
+            marginBottom: "16px",
+            fontSize: "16px",
+            fontWeight: 600,
+            color: "var(--text-colour-headings)",
+          }}
+        >
+          Success State
+        </h3>
+        <InputField
+          label="Email"
+          placeholder="Enter your email"
+          value="user@example.com"
+          state="success"
+        />
+      </div>
+
+      <div>
+        <h3
+          style={{
+            marginBottom: "16px",
+            fontSize: "16px",
+            fontWeight: 600,
+            color: "var(--text-colour-headings)",
+          }}
+        >
+          Disabled
+        </h3>
+        <InputField
+          label="Email"
+          placeholder="Enter your email"
+          value="user@example.com"
+          disabled={true}
+        />
+      </div>
+
+      <div>
+        <h3
+          style={{
+            marginBottom: "16px",
+            fontSize: "16px",
+            fontWeight: 600,
+            color: "var(--text-colour-headings)",
+          }}
+        >
+          Password Input
+        </h3>
+        <InputField
+          label="Password"
+          placeholder="Enter your password"
+          type="password"
+        />
+      </div>
+    </div>
+  ),
+};

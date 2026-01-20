@@ -1,8 +1,8 @@
 import { useEffect, useState } from "preact/hooks";
-import preactLogo from "../../assets/preact.svg";
 
 import "./style.css";
 import Button from "../../components/Button";
+import InputField from "../../components/InputField";
 
 export function Home() {
   const [currentTheme, setCurrentTheme] = useState("brand-a");
@@ -32,17 +32,104 @@ export function Home() {
             Switch Brand
           </button>
         </div>
-        <h1>component</h1>
-        <h2>Button</h2>
-        <Button size="md" onClick={() => alert("Primary Button Clicked!")}>
-          Click Me
-        </Button>
-        <br />
-        <Button size="sm" onClick={() => alert("Primary Button Clicked!")}>
-          Click Me
-        </Button>
-        <br />
-        <button class={"bg-action-primary px-12 rounded-full "}>hello</button>
+        {/* Component Testing */}
+        <div class="bg-secondary rounded-lg p-6 border border-border-primary">
+          <h3 class="text-xl font-heading text-text-heading mb-6">
+            Button Component
+          </h3>
+          <div class="flex gap-4 flex-wrap">
+            <Button
+              size="md"
+              onClick={() => alert("Primary Button Clicked!")}
+              label="Medium Button"
+            />
+            <Button
+              size="sm"
+              onClick={() => alert("Small Button Clicked!")}
+              label="Small Button"
+            />
+          </div>
+        </div>
+
+        {/* InputField Testing */}
+        <div class="bg-secondary rounded-lg p-6 border border-border-primary">
+          <h3 class="text-xl font-heading text-text-heading mb-6">
+            InputField Component States
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p class="text-sm text-text-passive mb-2 font-medium">
+                Default State
+              </p>
+
+              <br />
+              <InputField label="Email" placeholder="Enter your email" />
+            </div>
+
+            <div>
+              <p class="text-sm text-text-passive mb-2 font-medium">
+                Filled State
+              </p>
+              <br />
+              <InputField
+                label="Username"
+                placeholder="Enter username"
+                value="johndoe"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm text-text-passive mb-2 font-medium">
+                Error State
+              </p>
+              <br />
+              <InputField
+                label="Email"
+                placeholder="Enter your email"
+                value="invalid-email"
+                state="error"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm text-text-passive mb-2 font-medium">
+                Success State
+              </p>
+              <br />
+              <InputField
+                label="Email"
+                placeholder="Enter your email"
+                value="user@example.com"
+                state="success"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm text-text-passive mb-2 font-medium">
+                Disabled State
+              </p>
+              <br />
+              <InputField
+                label="Disabled Field"
+                placeholder="Cannot edit"
+                value="Disabled value"
+                disabled={true}
+              />
+            </div>
+
+            <div>
+              <p class="text-sm text-text-passive mb-2 font-medium">
+                Password Type
+              </p>
+              <br />
+              <InputField
+                label="Password"
+                placeholder="Enter password"
+                type="password"
+              />
+            </div>
+          </div>
+        </div>
         {/* Color Samples */}
         <div class="bg-secondary rounded-lg p-6 border border-border-primary">
           <h3 class="text-xl font-heading text-text-heading mb-4">
