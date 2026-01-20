@@ -1,6 +1,6 @@
-import Card from "../Card";
-import Typography from "../Typography";
-import Button from "../ui/Button";
+import Card from "../ui/card";
+import Typography from "../ui/typography";
+import Button from "../ui/button";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import LogoBanner from "../../assets/images/login-banner.svg";
 export default function LoginCard() {

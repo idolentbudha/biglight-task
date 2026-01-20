@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/preact";
-import Button, { type ButtonProps } from "./Button";
+import Button, { type ButtonProps } from ".";
 import { StyledEngineProvider } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";

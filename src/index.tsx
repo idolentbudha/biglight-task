@@ -1,7 +1,6 @@
 import { render } from "preact";
 import { LocationProvider, Router, Route } from "preact-iso";
 
-import { Header } from "./components/Header.jsx";
 import { Home } from "./pages/Home/index.jsx";
 import { NotFound } from "./pages/_404.jsx";
 import { StyledEngineProvider } from "@mui/material/styles";
@@ -14,7 +13,6 @@ export function App() {
     <LocationProvider>
       <StyledEngineProvider enableCssLayer>
         <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
-        <Header />
         <main>
           <Router>
             <Route path="/" component={Home} />

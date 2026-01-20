@@ -27,68 +27,76 @@
     background-color: var(--surface-colour-page);
   }
 
-  /* Headings */
+  /* Headings - Figma specs: Medium weight (500), 120% line-height */
   h1 {
     font-family: var(--font-font-family-headings), system-ui, sans-serif;
     font-size: var(--font-size-heading-h1);
-    line-height: var(--line-height-heading-h1);
-    font-weight: 600;
+    line-height: 120%;
+    font-weight: 500;
     color: var(--text-colour-headings);
     margin-bottom: var(--spacing-md);
+    letter-spacing: 0%;
   }
 
   h2 {
     font-family: var(--font-font-family-headings), system-ui, sans-serif;
     font-size: var(--font-size-heading-h2);
-    line-height: var(--line-height-heading-h2);
-    font-weight: 600;
+    line-height: 120%;
+    font-weight: 500;
     color: var(--text-colour-headings);
     margin-bottom: var(--spacing-sm);
+    letter-spacing: 0%;
   }
 
   h3 {
     font-family: var(--font-font-family-headings), system-ui, sans-serif;
     font-size: var(--font-size-heading-h3);
-    line-height: var(--line-height-heading-h3);
-    font-weight: 600;
+    line-height: 120%;
+    font-weight: 500;
     color: var(--text-colour-headings);
     margin-bottom: var(--spacing-sm);
+    letter-spacing: 0%;
   }
 
   h4 {
     font-family: var(--font-font-family-headings), system-ui, sans-serif;
     font-size: var(--font-size-heading-h4);
-    line-height: var(--line-height-heading-h4);
-    font-weight: 600;
+    line-height: 120%;
+    font-weight: 500;
     color: var(--text-colour-headings);
     margin-bottom: var(--spacing-xs);
+    letter-spacing: 0%;
   }
 
   h5 {
     font-family: var(--font-font-family-headings), system-ui, sans-serif;
     font-size: var(--font-size-heading-h5);
-    line-height: var(--line-height-heading-h5);
-    font-weight: 600;
+    line-height: 120%;
+    font-weight: 500;
     color: var(--text-colour-headings);
     margin-bottom: var(--spacing-xs);
+    letter-spacing: 0%;
   }
 
   h6 {
     font-family: var(--font-font-family-headings), system-ui, sans-serif;
     font-size: var(--font-size-heading-h6);
-    line-height: var(--line-height-heading-h6);
-    font-weight: 600;
+    line-height: 120%;
+    font-weight: 500;
     color: var(--text-colour-headings);
     margin-bottom: var(--spacing-xs);
+    letter-spacing: 0%;
   }
 
-  /* Paragraphs */
+  /* Paragraphs - Figma specs: Regular weight (400), 140% line-height */
   p {
     font-family: var(--font-font-family-paragraph), system-ui, sans-serif;
     font-size: var(--font-size-body-md);
-    line-height: var(--line-height-body-md);
+    line-height: 140%;
+    font-weight: 400;
     color: var(--text-colour-body);
     margin-bottom: var(--spacing-sm);
+    letter-spacing: 0%;
   }
 
   /* Small text */

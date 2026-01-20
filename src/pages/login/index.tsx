@@ -1,10 +1,10 @@
 import { useEffect, useState } from "preact/hooks";
 
 import LoginCard from "@components/login/LoginCard";
-import Typography from "@/components/Typography";
-import Dropdown from "@/components/Dropdown";
-import InputField from "@/components/InputField";
-import Button from "@/components/ui/Button";
+import Typography from "@/components/ui/typography";
+import Dropdown from "@/components/ui/dropdown";
+import InputField from "@/components/ui/inputfield";
+import Button from "@/components/ui/button";
 
 export function Login() {
   const [currentTheme, setCurrentTheme] = useState("brand-a");

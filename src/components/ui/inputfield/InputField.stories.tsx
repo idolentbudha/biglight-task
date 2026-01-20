@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/preact";
-import { InputField, InputFieldProps } from "./InputField";
+import { InputField, InputFieldProps } from "../../InputField";
 import { useState } from "preact/hooks";
 import { StyledEngineProvider } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/preact";
-import Typography, { type TypographyProps } from "./Typography";
+import Typography, { type TypographyProps } from ".";
 import { StyledEngineProvider } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";
 

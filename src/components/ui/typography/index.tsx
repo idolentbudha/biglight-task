@@ -55,17 +55,17 @@ export default function Typography({
 
   const Tag = getTag() as any;
 
-  // Variant styles
+  // Variant styles - Figma specs: Headings use Medium (500), 120% line-height; Body uses 140%
   const variantStyles = {
-    h1: "font-heading text-heading-h1 font-semibold",
-    h2: "font-heading text-heading-h2 font-semibold",
-    h3: "font-heading text-heading-h3 font-semibold",
-    h4: "font-heading text-heading-h4 font-semibold",
-    h5: "font-heading text-heading-h5 font-semibold",
-    h6: "font-heading text-heading-h6 font-semibold",
-    body: "font-body",
-    small: "font-body",
-    caption: "font-body",
+    h1: "font-heading text-heading-h1 font-medium leading-[120%]",
+    h2: "font-heading text-heading-h2 font-medium leading-[120%]",
+    h3: "font-heading text-heading-h3 font-medium leading-[120%]",
+    h4: "font-heading text-heading-h4 font-medium leading-[120%]",
+    h5: "font-heading text-heading-h5 font-medium leading-[120%]",
+    h6: "font-heading text-heading-h6 font-medium leading-[120%]",
+    body: "font-body leading-[140%]",
+    small: "font-body leading-[140%]",
+    caption: "font-body leading-[140%]",
   };
 
   // Size styles (only applicable to body, small, caption)

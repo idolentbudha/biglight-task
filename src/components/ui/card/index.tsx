@@ -4,7 +4,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import CardActions from "@mui/material/CardActions";
 import { Stack } from "@mui/material";
-import Button from "./ui/Button";
+import Button from "../button";
 
 export interface CardProps {
   children?: ComponentChildren;

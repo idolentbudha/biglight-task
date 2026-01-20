@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/preact";
-import Card, { type CardProps } from "./Card";
-import Button from "./ui/Button";
+import Card, { type CardProps } from "../../Card";
+import Button from "../button";
 import { StyledEngineProvider } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import FavoriteIcon from "@mui/icons-material/Favorite";
