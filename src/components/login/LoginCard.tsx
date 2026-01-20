@@ -16,10 +16,14 @@ export default function LoginCard() {
           </Typography>
           <Button
             label="Become a member"
-            startIcon={<PersonOutlineOutlinedIcon />}
+            startIcon={<PersonOutlineOutlinedIcon aria-label="User icon" />}
           />
         </div>
-        <img src={LogoBanner} alt="login banner" />
+        <img
+          src={LogoBanner}
+          alt="Family membership promotional banner with welcoming design"
+          role="img"
+        />
       </div>
     </Card>
   );

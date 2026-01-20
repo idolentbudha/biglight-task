@@ -1,4 +1,6 @@
+import { handleActivation } from "@/utils/accessibility";
 import MuiButton from "@mui/material/Button";
+import { getAriaButtonProps } from "@/utils/accessibility";
 
 export type ButtonVariant = "primary" | "secondary" | "tertiary";
 export type ButtonSize = "sm" | "md";
@@ -11,6 +13,7 @@ export interface ButtonProps {
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   onClick?: () => void;
+  type?: "button" | "submit" | "reset";
 }
 
 export default function Button({
@@ -22,6 +25,7 @@ export default function Button({
   startIcon,
   endIcon,
   onClick,
+  type = "button",
 }: ButtonProps) {
   // Base styles
   const baseStyles =
@@ -46,15 +50,22 @@ export default function Button({
     md: "px-16 py-16 text-base",
   };
 
+  // Keyboard accessibility: Handle Enter/Space activation
+  const handleKeyDown =
+    !disabled && onClick ? handleActivation(onClick) : undefined;
+
   return (
     <MuiButton
+      type={type}
       disabled={disabled}
       onClick={onClick}
+      onKeyDown={handleKeyDown}
       className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className} normal-case`}
       disableRipple
       startIcon={startIcon}
       endIcon={endIcon}
       variant="contained"
+      tabIndex={disabled ? -1 : 0}
     >
       {label}
     </MuiButton>

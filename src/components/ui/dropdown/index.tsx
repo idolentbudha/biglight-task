@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useState, useRef, useEffect } from "preact/hooks";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -6,6 +6,7 @@ import Select from "@mui/material/Select";
 import { FormHelperText } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { useKeyboardNav, getAriaDropdownProps } from "@/utils/accessibility";
 
 export interface DropdownOption {
   value: string | number;
@@ -42,6 +43,8 @@ export function Dropdown({
   const [isFocused, setIsFocused] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [internalValue, setInternalValue] = useState<string | number>("");
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const selectRef = useRef<HTMLSelectElement>(null);
 
   // Use controlled value if provided, otherwise use internal state
   const value = controlledValue !== undefined ? controlledValue : internalValue;
@@ -88,13 +91,85 @@ export function Dropdown({
 
   const handleClose = () => {
     setIsOpen(false);
+    setHighlightedIndex(-1);
   };
+
+  // Reset highlighted index when options change
+  useEffect(() => {
+    setHighlightedIndex(-1);
+  }, [options]);
+
+  // Keyboard navigation using reusable hook
+  const keyboardRef = useKeyboardNav<HTMLDivElement>({
+    onArrowDown: () => {
+      if (!disabled) {
+        if (!isOpen) {
+          setIsOpen(true);
+        } else if (highlightedIndex < options.length - 1) {
+          setHighlightedIndex(highlightedIndex + 1);
+        }
+      }
+    },
+    onArrowUp: () => {
+      if (!disabled && isOpen && highlightedIndex > 0) {
+        setHighlightedIndex(highlightedIndex - 1);
+      }
+    },
+    onEnter: () => {
+      if (
+        !disabled &&
+        isOpen &&
+        highlightedIndex >= 0 &&
+        options[highlightedIndex]
+      ) {
+        const selectedOption = options[highlightedIndex];
+        if (controlledValue === undefined) {
+          setInternalValue(selectedOption.value);
+        }
+        onChange?.(selectedOption.value);
+        setIsOpen(false);
+      }
+    },
+    onEscape: () => {
+      if (!disabled && isOpen) {
+        setIsOpen(false);
+        setHighlightedIndex(-1);
+      }
+    },
+    onSpace: () => {
+      if (!disabled && !isOpen) {
+        setIsOpen(true);
+      }
+    },
+    onHome: () => {
+      if (!disabled && isOpen) {
+        setHighlightedIndex(0);
+      }
+    },
+    onEnd: () => {
+      if (!disabled && isOpen) {
+        setHighlightedIndex(options.length - 1);
+      }
+    },
+    enabled: !disabled,
+  });
 
   const selectId =
     id || name || `select-${Math.random().toString(36).substr(2, 9)}`;
 
+  // Generate ARIA attributes for accessibility
+  const ariaProps = getAriaDropdownProps({
+    id: selectId,
+    label,
+    expanded: isOpen,
+    required,
+    disabled,
+    invalid: false,
+    describedBy: required ? `${selectId}-helper-text` : undefined,
+  });
+
   return (
-    <div class="w-full">
+    <div class="w-full" ref={keyboardRef}>
       <FormControl fullWidth variant="outlined">
         {label && (
           <InputLabel
@@ -117,6 +192,13 @@ export function Dropdown({
           onClose={handleClose}
           disabled={disabled}
           displayEmpty={!!placeholder}
+          tabIndex={disabled ? -1 : 0}
+          inputProps={{
+            "aria-expanded": ariaProps["aria-expanded"] === "true",
+            "aria-haspopup": ariaProps["aria-haspopup"],
+            "aria-required": ariaProps["aria-required"] === "true",
+            "aria-describedby": ariaProps["aria-describedby"],
+          }}
           className={`rounded-lg ${disabled ? "bg-surface-disabled-dark" : isSelected ? "bg-surface-selected" : "bg-secondary"}`}
           IconComponent={(_props) => (
             <ExpandMoreIcon
@@ -125,6 +207,8 @@ export function Dropdown({
                   ? "fill-icon-action-disabled"
                   : "fill-icon-action-active"
               }`}
+              aria-label={isOpen ? "Collapse options" : "Expand options"}
+              role="img"
             />
           )}
           slotProps={{
@@ -133,14 +217,21 @@ export function Dropdown({
             },
             notchedOutline: { className: `border-2 ${getBorderColor()} ` },
           }}
-          startAdornment={<AccessTimeIcon className="px-1.5" />}
+          startAdornment={
+            <AccessTimeIcon
+              className="px-1.5"
+              aria-label="Time selector"
+              role="img"
+            />
+          }
+          renderValue={(selected) => {
+            if (selected === "" || selected === undefined) {
+              return <em class="text-text-passive px-4">{placeholder}</em>;
+            }
+            const option = options.find((opt) => opt.value === selected);
+            return option ? option.label : selected;
+          }}
         >
-          {value === "" && (
-            <MenuItem value="" disabled>
-              <em class="text-text-passive px-4">{placeholder}</em>
-            </MenuItem>
-          )}
-
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}

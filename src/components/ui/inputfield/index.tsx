@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import { getAriaFormFieldProps } from "@/utils/accessibility";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import CloseIcon from "@mui/icons-material/Close";
@@ -84,6 +85,17 @@ export function InputField({
   const inputId =
     id || name || `input-${Math.random().toString(36).substr(2, 9)}`;
 
+  // Generate ARIA attributes for accessibility
+  const ariaProps = getAriaFormFieldProps({
+    id: inputId,
+    label,
+    required,
+    disabled,
+    invalid: state === "error",
+    describedBy: required ? `${inputId}-helper-text` : undefined,
+    errorMessage: state === "error" ? "Please check this field" : undefined,
+  });
+
   return (
     <div class="w-full">
       <FormControl fullWidth variant="outlined">
@@ -107,6 +119,12 @@ export function InputField({
           onFocus={handleFocus}
           onBlur={handleBlur}
           label={label}
+          inputProps={{
+            "aria-label": ariaProps["aria-label"],
+            "aria-required": ariaProps["aria-required"] === "true",
+            "aria-invalid": ariaProps["aria-invalid"] === "true",
+            "aria-describedby": ariaProps["aria-describedby"],
+          }}
           // className={`
           //       w-full px-md py-sm
           //       font-body text-body-md
@@ -131,17 +149,35 @@ export function InputField({
           endAdornment={
             <InputAdornment position="end">
               {state === "success" ? (
-                <CheckIcon className={`fill-icon-positive`} />
+                <CheckIcon
+                  className={`fill-icon-positive`}
+                  aria-label="Input is valid"
+                  role="img"
+                />
               ) : (
                 <CloseIcon
                   className={`${disabled ? "fill-icon-action-disabled" : state === "error" ? "fill-icon-error" : "fill-icon-action-active"} transition-colors`}
+                  aria-label={
+                    state === "error" ? "Error in input" : "Clear input"
+                  }
+                  role="img"
                 />
               )}
             </InputAdornment>
           }
         />
-        <FormHelperText id="outlined-weight-helper-text">
-          {required && (
+        <FormHelperText id={`${inputId}-helper-text`}>
+          {state === "error" && (
+            <span class="text-text-error" role="alert" aria-live="polite">
+              Please check this field
+            </span>
+          )}
+          {state === "success" && (
+            <span class="text-text-success" role="status" aria-live="polite">
+              Input is valid
+            </span>
+          )}
+          {required && !state && (
             <p class="text-md">
               <span class={"text-warning"}>*</span>required
             </p>
