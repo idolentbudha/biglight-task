@@ -20,28 +20,32 @@ export function Login() {
   };
 
   return (
-    <div class="min-h-screen bg-page p-8">
-      <Typography variant="h1" className="!text-primary mt-6 mb-7">
-        Log into your <br /> account.
-      </Typography>
-      <Typography className="!text-inverse mb-5">
-        Please enter your email for a one-time-only code
-      </Typography>
-      <div className={"flex flex-col gap-5 mb-5"}>
-        <Dropdown options={[]} />
-        <InputField label="Email" placeholder="Enter your email" />
-        <Button
-          label="Continue"
-          variant="secondary"
-          onClick={() => alert("Code Sent!")}
-        />
-        <Button
-          label="Login with your password"
-          variant="tertiary"
-          onClick={() => alert("Code Sent!")}
-        />
+    <div class="min-h-screen bg-page p-8 ">
+      <div className={"w-xl mx-auto my-auto"}>
+        <Typography variant="h1" className="!text-primary mt-6 mb-7">
+          Log into your <br /> account.
+        </Typography>
+        <Typography className="!text-inverse mb-5">
+          Please enter your email for a one-time-only code
+        </Typography>
+        <div className={"flex flex-col gap-7 mb-7"}>
+          <Dropdown options={[]} />
+          <InputField label="Email" placeholder="Enter your email" />
+        </div>
+        <div className="flex flex-col gap-5 mb-10">
+          <Button
+            label="Continue"
+            variant="secondary"
+            onClick={() => alert("Code Sent!")}
+          />
+          <Button
+            label="Login with your password"
+            variant="tertiary"
+            onClick={() => alert("Code Sent!")}
+          />
+        </div>
+        <LoginCard />
       </div>
-      <LoginCard />
     </div>
   );
 }

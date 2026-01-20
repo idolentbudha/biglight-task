@@ -9,7 +9,7 @@ export default function LoginCard() {
       <div className="flex flex-row items-center justify-between gap-8 py-8 px-8">
         <div className="flex flex-col gap-28">
           <Typography
-            variant="h1"
+            variant="h2"
             className="mb-4 text-text-action-on-secondary"
           >
             Join the <br /> family.
