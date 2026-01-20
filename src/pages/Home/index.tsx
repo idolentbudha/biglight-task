@@ -1,7 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
 
 import "./style.css";
-import Button from "../../components/Button";
+import Button from "../../components/ui/Button";
 import InputField from "../../components/InputField";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";

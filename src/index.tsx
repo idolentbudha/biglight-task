@@ -7,6 +7,7 @@ import { NotFound } from "./pages/_404.jsx";
 import { StyledEngineProvider } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import "./style.css";
+import { Login } from "./pages/login/index.js";
 
 export function App() {
   return (
@@ -17,6 +18,7 @@ export function App() {
         <main>
           <Router>
             <Route path="/" component={Home} />
+            <Route path="/login" component={Login} />
             <Route default component={NotFound} />
           </Router>
         </main>
