@@ -70,8 +70,8 @@ type Story = StoryObj<ButtonProps>;
 // Primary Variants
 export const Primary: Story = {
   args: {
-    variant: "tertiary",
-    size: "sm",
+    variant: "primary",
+    size: "md",
     label: "Button Label",
   },
   parameters: {

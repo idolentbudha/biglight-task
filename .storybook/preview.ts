@@ -3,6 +3,11 @@ import { withThemeByDataAttribute } from "@storybook/addon-themes";
 
 import "../src/style.css";
 
+// Set default theme on body element when Storybook loads
+if (typeof window !== "undefined") {
+  document.body.setAttribute("data-theme", "brand-a");
+}
+
 const preview: Preview = {
   parameters: {
     controls: {

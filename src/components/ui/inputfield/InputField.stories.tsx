@@ -50,6 +50,11 @@ const meta = {
       control: "boolean",
       description: "Whether the input is required",
     },
+    showStateIcon: {
+      control: "boolean",
+      description: "Whether to show state icon (checkmark/close) at the end",
+      defaultValue: true,
+    },
   },
 } satisfies Meta<InputFieldProps>;
 
@@ -100,56 +105,6 @@ export const Disabled: Story = {
     placeholder: "Enter your email",
     value: "user@example.com",
     disabled: true,
-  },
-};
-
-// Without label
-export const WithoutLabel: Story = {
-  args: {
-    placeholder: "Search...",
-  },
-};
-
-// Password input
-export const Password: Story = {
-  args: {
-    label: "Password",
-    placeholder: "Enter your password",
-    type: "password",
-  },
-};
-
-// Interactive example with state management
-export const Interactive: Story = {
-  render: () => {
-    const [value, setValue] = useState("");
-    const [state, setState] = useState<"default" | "error" | "success">(
-      "default",
-    );
-
-    const handleChange = (newValue: string) => {
-      setValue(newValue);
-
-      // Simple email validation
-      if (newValue.length === 0) {
-        setState("default");
-      } else if (!newValue.includes("@")) {
-        setState("error");
-      } else {
-        setState("success");
-      }
-    };
-
-    return (
-      <InputField
-        label="Email (with validation)"
-        placeholder="Enter your email"
-        value={value}
-        state={state}
-        onChange={handleChange}
-        required={true}
-      />
-    );
   },
 };
 
@@ -269,6 +224,46 @@ export const AllStates: Story = {
           label="Password"
           placeholder="Enter your password"
           type="password"
+        />
+      </div>
+
+      <div>
+        <h3
+          style={{
+            marginBottom: "16px",
+            fontSize: "16px",
+            fontWeight: 600,
+            color: "var(--text-colour-headings)",
+          }}
+        >
+          Success (No Icon)
+        </h3>
+        <InputField
+          label="Email"
+          placeholder="Enter your email"
+          value="user@example.com"
+          state="success"
+          showStateIcon={false}
+        />
+      </div>
+
+      <div>
+        <h3
+          style={{
+            marginBottom: "16px",
+            fontSize: "16px",
+            fontWeight: 600,
+            color: "var(--text-colour-headings)",
+          }}
+        >
+          Error (No Icon)
+        </h3>
+        <InputField
+          label="Email"
+          placeholder="Enter your email"
+          value="invalid-email"
+          state="error"
+          showStateIcon={false}
         />
       </div>
     </div>

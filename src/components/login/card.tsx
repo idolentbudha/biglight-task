@@ -8,14 +8,22 @@ export default function LoginCard({ className = "" }: { className?: string }) {
     <Card className={`bg-primary ${className}`}>
       <div className="flex flex-row items-center justify-between gap-x-24">
         <div className="flex flex-2 flex-col gap-6">
-          <Typography variant="h2" className="font-medium" color="inverse">
+          <Typography
+            variant="h2"
+            className="font-medium"
+            color="inverse"
+            weight="regular"
+          >
             Join the <br /> family.
           </Typography>
           <Button
             label="Become a member"
             size="sm"
             startIcon={
-              <PersonOutlineOutlinedIcon aria-hidden="true" role="presentation" />
+              <PersonOutlineOutlinedIcon
+                aria-hidden="true"
+                role="presentation"
+              />
             }
           />
         </div>

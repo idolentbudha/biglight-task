@@ -55,11 +55,11 @@ export function Login() {
           </button>
         </div>
         <div className="flex flex-col gap-5 mb-7">
-          <Typography variant="h1" className="text-primary!" weight="regular">
+          <Typography variant="h1" className="text-primary" weight="regular">
             Log into your <br className="hidden md:inline" />
             account
           </Typography>
-          <Typography className="text-inverse!">
+          <Typography className="text-inverse">
             Please enter your email for a one-time-only code
           </Typography>
         </div>
