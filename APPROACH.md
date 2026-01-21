@@ -643,6 +643,7 @@ Adding Brand C requires:
 - TypeScript warnings in build scripts (needs @types/node)
 - Font loading flash on initial page load (needs font preload strategy)
 - Storybook theme decorator required per story
+- Futher refactoring can be done to improve maintainability as components grows
 
 ---
 
@@ -721,6 +722,41 @@ BIGLIGHT_BRAND=brand-b NODE_ENV=production npm run build
 # Preview production build
 npm run preview
 ```
+
+---
+
+## AI usage note:
+
+This project was built using AI tools as **augmentation**, not replacement, for software development:
+
+### Tools Used
+
+- **Primary:** GitHub Copilot (Claude Sonnet 4.5) integrated in VS Code
+- **Supporting:** Gemini, ChatGPT, and other AI assistants for research and validation
+
+### Development Philosophy
+
+**AI as a Collaborative Tool:**
+
+- AI tools used for code generation, boilerplate reduction, and exploring implementation patterns
+- AI assists in validating architectural decisions and identifying potential issues early
+- AI helps document complex systems and generate comprehensive examples
+
+**Human-Led Decision Making:**
+
+- **Never rely solely on AI answers** - all suggestions researched and validated independently
+- **AI does not make architectural decisions** - all major choices (token layers, build system, component patterns) are human-driven
+- **Thorough review process** - every AI-generated code snippet checked against project requirements and best practices
+- **Continuous improvement** - AI outputs treated as starting points, refined through testing and iteration
+
+### Workflow Integration
+
+1. **Ideation Phase:** Use AI to explore different approaches and trade-offs
+2. **Implementation Phase:** AI generates boilerplate, I refine for project-specific needs
+3. **Validation Phase:** AI helps identify edge cases and potential improvements
+4. **Review Phase:** Verify all code aligns with established patterns and architectural decisions
+
+**Key Principle:** AI accelerates development by handling repetitive tasks, but the solution architecture, design decisions, and quality standards remain human-controlled.
 
 ---
 

@@ -18,17 +18,21 @@ These notes help AI agents work productively in this repo. Keep guidance concret
 
 ## Dev Workflows
 
-- **Install**: `npm install && npm run build:tokens` (tokens required for first setup)
+- **Install**: `npm install` (auto-runs `postinstall` hook that calls `build:tokens`)
+  - First time: Copy `.env.example` to `.env` if you need custom brand config
+  - Tokens automatically generated on install via postinstall hook
 - **Dev server**: `npm run dev` (HMR on http://localhost:5173)
 - **Build tokens**: `npm run build:tokens` (only when design tokens change)
   - Development mode: Always generates ALL brands (for theme switching)
   - Production mode: Generates only specified brand from BIGLIGHT_BRAND
   - Generated files: `build/css/` (gitignored), including `imports.css` with all brand imports
   - Auto-updates: `src/brand-config.js` (committed for IDE intellisense)
-- **Production build**: `npm run build` → `dist/`
+- **Production build**: `npm run build` → `dist/` (runs `build:tokens` then `vite build`)
 - **Preview build**: `npm run preview` (http://localhost:4173)
 - **Storybook**: `npm run storybook` (port 6006) — all components have stories with theme switcher
+- **Build Storybook**: `npm run build-storybook` (static export for deployment)
 - **Lint**: `npx eslint .` (no script, uses `eslint-config-preact`)
+- **Testing**: Component tests run via Storybook + Vitest integration (see Testing section)
 
 ## Design System: Token & Theming Architecture
 
@@ -292,6 +296,23 @@ Example: [Button](../src/components/ui/button/index.tsx) uses `handleActivation`
 
 Import path: `@config '../tailwind.config.js'` in [src/style.css](../src/style.css).
 
+## Testing
+
+**Component Testing** via Storybook + Vitest integration:
+
+- Tests run against Storybook stories using `@storybook/addon-vitest`
+- Browser tests powered by Playwright (Chromium)
+- Config: [vite.config.ts](../vite.config.ts) defines test setup
+- Accessibility tests: Built into Storybook with `addon-a11y` (see `.storybook/preview.ts`)
+  - Set to `test: "todo"` mode (shows violations in UI, doesn't fail builds)
+  - Switch to `test: "error"` for CI/CD enforcement
+
+**Running Tests**:
+
+- Stories serve as test specifications
+- Each component story is a test case
+- Vitest executes stories in browser context
+
 ## Theme Switching
 
 Runtime theme change pattern (see [Login page](../src/pages/login/index.tsx)):
@@ -370,11 +391,3 @@ This ensures a clean design-to-code workflow with minimal code churn.
 - **CSS layers order**: `@layer theme, base, mui, components, utilities` (MUST be consistent)
 - **Accessibility**: Include skip links, ARIA labels, keyboard handlers (see [Login](../src/pages/login/index.tsx))
 - **No inline styles**: Use Tailwind classes with semantic tokens only
-
-## Common Gotchas
-
-1. **Token collision warnings**: Expected during build when brand tokens override aliases (by design)
-2. **Reference errors**: If token build fails, check `fixReferenceStrings` regex in [config.js](../config.js)
-3. **MUI styles not scoped**: Missing `enableCssLayer` prop on `StyledEngineProvider`
-4. **Theme not switching**: Forgot to import brand CSS files in [src/style.css](../src/style.css)
-5. **Spacing values wrong**: Using raw numbers instead of Tailwind scale (use `p-12` not `p-3`)
