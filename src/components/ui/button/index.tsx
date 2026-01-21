@@ -28,16 +28,16 @@ export default function Button({
 }: ButtonProps) {
   // Base styles
   const baseStyles =
-    "inline-flex items-center justify-center font-medium rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+    "inline-flex items-center justify-center font-medium rounded-full transition duration-300 ease-in-out   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
   // Variant styles
   const variantStyles = {
     primary: disabled
       ? "bg-disabled-dark cursor-not-allowed text-text-action-disabled"
-      : "bg-action-primary hover:bg-action-primary-hover text-text-action-on-primary hover:text-text-inverse",
+      : "bg-action-primary hover:bg-action-primary-hover  text-text-action-on-primary hover:text-text-inverse",
     secondary: disabled
       ? "bg-disabled-dark cursor-not-allowed text-text-action-disabled"
-      : "bg-action-secondary hover:bg-action-secondary-hover text-text-action-on-secondary hover:text-text-inverse",
+      : "bg-action-secondary hover:bg-action-secondary-hover  text-text-action-on-secondary hover:text-text-action-active",
     tertiary: disabled
       ? "bg-disabled-light border-2 border-border-disabled cursor-not-allowed text-text-action-disabled"
       : "bg-transparent hover:bg-border-primary  border-2 border-border-primary text-text-action-active hover:text-text-inverse",

@@ -43,17 +43,23 @@ export function Login() {
       <main
         id="main-content"
         role="main"
-        class={"px-20 sm:px-48 py-20 md:max-w-[480px] md:mx-auto"}
+        class="px-20 sm:px-48 py-20 sm:max-w-120 sm:mx-auto"
       >
-        <div className={"w-[100%] flex justify-end my-24 px-2"}>
-          <CloseIcon className={`fill-icon-action-active`} role="button" />
+        <div className="w-full flex justify-end my-24 px-2">
+          <button
+            onClick={() => alert("Close button clicked")}
+            className="bg-transparent border-0 cursor-pointer p-0"
+            aria-label="Close login form"
+          >
+            <CloseIcon className="fill-icon-action-active" fontSize="medium" />
+          </button>
         </div>
-        <div className={"flex flex-col gap-5 mb-7"}>
-          <Typography variant="h1" className="!text-primary" weight="regular">
+        <div className="flex flex-col gap-5 mb-7">
+          <Typography variant="h1" className="text-primary!" weight="regular">
             Log into your <br className="hidden md:inline" />
             account
           </Typography>
-          <Typography className="!text-inverse">
+          <Typography className="text-inverse!">
             Please enter your email for a one-time-only code
           </Typography>
         </div>
@@ -61,7 +67,7 @@ export function Login() {
         <form
           onSubmit={handleSubmit}
           aria-label="Login form"
-          className={"flex flex-col gap-7 mb-7"}
+          className="flex flex-col gap-7 mb-7"
         >
           <Dropdown
             label="Customer type"

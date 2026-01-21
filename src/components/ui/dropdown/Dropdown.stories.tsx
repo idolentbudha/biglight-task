@@ -28,7 +28,9 @@ const meta = {
     (Story) => (
       <StyledEngineProvider enableCssLayer>
         <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
-        <Story />
+        <div style={{ minWidth: "320px", width: "100%" }}>
+          <Story />
+        </div>
       </StyledEngineProvider>
     ),
   ],

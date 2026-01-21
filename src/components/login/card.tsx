@@ -14,7 +14,9 @@ export default function LoginCard({ className = "" }: { className?: string }) {
           <Button
             label="Become a member"
             size="sm"
-            startIcon={<PersonOutlineOutlinedIcon aria-label="User icon" />}
+            startIcon={
+              <PersonOutlineOutlinedIcon aria-hidden="true" role="presentation" />
+            }
           />
         </div>
         <div className="flex flex-1">
