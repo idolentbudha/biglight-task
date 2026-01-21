@@ -2,7 +2,7 @@ name: Build and Publish Storybook to GitHub Pages
 on:
   push:
     branches:
-      - 'main' # Use specific branch name
+      - 'main'
 permissions:
   contents: read
   pages: write
