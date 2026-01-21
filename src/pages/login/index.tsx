@@ -5,12 +5,13 @@ import Typography from "@/components/ui/typography";
 import Dropdown from "@/components/ui/dropdown";
 import InputField from "@/components/ui/inputfield";
 import Button from "@/components/ui/button";
+import { DEFAULT_BRAND, IS_MULTI_BRAND } from "@/brand-config";
 
 export function Login() {
-  const [currentTheme, setCurrentTheme] = useState("brand-a");
+  const [currentTheme, setCurrentTheme] = useState(DEFAULT_BRAND);
   useEffect(() => {
-    //set brand-a as the default theme
-    document.body.setAttribute("data-theme", "brand-a");
+    //set default brand from config
+    document.body.setAttribute("data-theme", DEFAULT_BRAND);
   }, []);
 
   const switchBrand = () => {

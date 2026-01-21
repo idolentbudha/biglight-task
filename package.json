@@ -3,9 +3,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "env-cmd npm run build:tokens && npm run build:style && vite build",
     "preview": "vite preview",
-    "build:tokens": "node build-tokens.js",
+    "build:tokens": "env-cmd node build-tokens.js",
+    "build:style": "env-cmd node generate-style-imports.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -27,8 +28,10 @@
     "@storybook/addon-themes": "^10.1.11",
     "@storybook/addon-vitest": "^10.1.11",
     "@storybook/preact-vite": "^10.1.11",
+    "@types/node": "^25.0.9",
     "@vitest/browser-playwright": "^4.0.17",
     "@vitest/coverage-v8": "^4.0.17",
+    "env-cmd": "^11.0.0",
     "eslint": "^9.39.2",
     "eslint-config-preact": "^2.0.0",
     "eslint-plugin-storybook": "^10.1.11",

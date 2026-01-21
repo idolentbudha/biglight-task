@@ -1,7 +1,6 @@
 import { render } from "preact";
 import { LocationProvider, Router, Route } from "preact-iso";
 
-import { Home } from "./pages/Home/index.jsx";
 import { NotFound } from "./pages/_404.jsx";
 import { StyledEngineProvider } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";

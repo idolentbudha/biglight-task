@@ -7,10 +7,7 @@
 /* Token imports: primitives → responsive → brand files (primitives → alias → mapped) */
 @import "../build/css/primitives.css";
 @import "../build/css/responsive.css";
-@import "../build/css/brand-a.primitives.css";
-@import "../build/css/brand-a.alias.css";
-@import "../build/css/brand-a.mapped.css";
-
+/* {{BRAND_IMPORTS}} */
 
 @config '../tailwind.config.js';
 
