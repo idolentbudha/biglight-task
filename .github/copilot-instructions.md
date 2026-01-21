@@ -18,9 +18,13 @@ These notes help AI agents work productively in this repo. Keep guidance concret
 
 ## Dev Workflows
 
-- **Install**: `npm install`
+- **Install**: `npm install && npm run build:tokens` (tokens required for first setup)
 - **Dev server**: `npm run dev` (HMR on http://localhost:5173)
-- **Build tokens**: `npm run build:tokens` (run BEFORE `npm run dev` if tokens changed)
+- **Build tokens**: `npm run build:tokens` (only when design tokens change)
+  - Development mode: Always generates ALL brands (for theme switching)
+  - Production mode: Generates only specified brand from BIGLIGHT_BRAND
+  - Generated files: `build/css/` (gitignored), including `imports.css` with all brand imports
+  - Auto-updates: `src/brand-config.js` (committed for IDE intellisense)
 - **Production build**: `npm run build` → `dist/`
 - **Preview build**: `npm run preview` (http://localhost:4173)
 - **Storybook**: `npm run storybook` (port 6006) — all components have stories with theme switcher
@@ -135,13 +139,14 @@ Correct cascade order in [src/style.css](../src/style.css):
 
 #### Environment-Based Brand Selection
 
-Brand selection is controlled via `.env` files using `BIGLIGHT_BRAND` variable:
+Brand selection is controlled via `.env` files using `BIGLIGHT_BRAND` and `NODE_ENV` variables:
 
 **Development** (`.env`):
 
 ```bash
-BIGLIGHT_BRAND=all  # Generates all brands for theme switching
+BIGLIGHT_BRAND=brand-a  # Ignored in dev mode
 NODE_ENV=development
+# In development: ALWAYS generates ALL brands (for Storybook theme switching)
 ```
 
 **Production** (`.env.production.brand-a` or `.env.production.brand-b`):
@@ -149,17 +154,32 @@ NODE_ENV=development
 ```bash
 BIGLIGHT_BRAND=brand-a  # Only generates Brand A CSS
 NODE_ENV=production
+# In production: Respects BIGLIGHT_BRAND value for optimized bundles
 ```
 
 #### Build Process
 
-The build process automatically reads `BIGLIGHT_BRAND` from the active `.env` file and:
+The build process behavior depends on `NODE_ENV`:
+
+**Development Mode (`NODE_ENV=development`)**:
+
+- ALWAYS generates all brands (ignores BIGLIGHT_BRAND value)
+- Enables theme switching in Storybook and development
+- Run: `npm run build:tokens` (manual trigger when design tokens change)
+
+**Production Mode (`NODE_ENV=production`)**:
+
+- Respects BIGLIGHT_BRAND value
+- Generates only the specified brand
+- 40% smaller CSS bundles
+
+Build steps:
 
 1. **Validates** the brand exists in [config.js](../config.js)
 2. **Shows confirmation** banner with build mode and target brand
-3. **Generates only required CSS**:
-   - `BIGLIGHT_BRAND=brand-a` → generates only Brand A CSS files
-   - `BIGLIGHT_BRAND=all` → generates all brand CSS files
+3. **Generates required CSS**:
+   - Development: All brands generated regardless of BIGLIGHT_BRAND
+   - Production: Only specified brand generated
 
 #### Production Build Workflows
 
@@ -297,12 +317,39 @@ When design tokens change:
 
 1. Designer updates tokens in Figma
 2. JSON is re-exported to [tokens-custom/figma-tokens.json](../tokens-custom/figma-tokens.json)
-3. Run `npm run build:tokens` (regenerates CSS)
-4. Mapped variables (L3) update
-5. Semantic Tailwind utilities remain stable
-6. **Components require NO changes** (encapsulation benefit)
+3. Run `npm run build:tokens` (regenerates CSS in `build/css/`)
+   - Development mode: Generates ALL brands regardless of BIGLIGHT_BRAND
+   - Production mode: Generates only the brand specified in BIGLIGHT_BRAND
+4. Script automatically updates [src/style.css](../src/style.css) with correct imports
+5. Script generates [src/brand-config.js](../src/brand-config.js) with DEFAULT_BRAND export
+6. Mapped variables (L3) update
+7. Semantic Tailwind utilities remain stable
+8. **Components require NO changes** (encapsulation benefit)
 
 This ensures a clean design-to-code workflow with minimal code churn.
+
+### Build Scripts Architecture
+
+**Token generation scripts** (root directory):
+
+- [build-tokens.js](../build-tokens.js): Main token build script
+  - Reads BIGLIGHT_BRAND and NODE_ENV from environment
+  - In development: Always builds all brands (ignores BIGLIGHT_BRAND)
+  - In production: Respects BIGLIGHT_BRAND value
+  - Generates CSS files in `build/css/` using Style Dictionary
+  - Calls generate-style-imports.js after completion
+
+- [generate-style-imports.js](../generate-style-imports.js): Dynamic import generator
+  - Creates `build/css/imports.css` with appropriate CSS imports
+  - Creates [src/brand-config.js](../src/brand-config.js) for runtime defaults
+  - Respects same dev/prod logic as build-tokens.js
+
+- [config.js](../config.js): Style Dictionary configuration
+  - Exports brands array and sanitizeBrandName helper
+  - Defines custom transforms and parsers
+  - Creates configs for primitives, responsive, and brand-specific builds
+
+**Important**: `build/css/` is **gitignored** (generated CSS from tokens). [src/style.css](../src/style.css) imports `build/css/imports.css` which contains all brand-specific CSS imports. [src/brand-config.js](../src/brand-config.js) is auto-generated but committed to git for IDE intellisense.
 
 ## Common Gotchas
 

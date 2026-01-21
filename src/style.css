@@ -4,13 +4,8 @@
 /* Font definitions - must load before using font families */
 @import "./fonts.css";
 
-/* Token imports: primitives → responsive → brand files (primitives → alias → mapped) */
-@import "../build/css/primitives.css";
-@import "../build/css/responsive.css";
-@import "../build/css/brand-a.primitives.css";
-@import "../build/css/brand-a.alias.css";
-@import "../build/css/brand-a.mapped.css";
-
+/* Token imports: Auto-generated from design tokens (see build/css/imports.css) */
+@import "../build/css/imports.css";
 
 @config '../tailwind.config.js';
 

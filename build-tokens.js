@@ -11,7 +11,10 @@ async function runBuild() {
   // Read brand from environment (BIGLIGHT_BRAND from .env file)
   const targetBrand = process.env.BIGLIGHT_BRAND;
   const isProduction = process.env.NODE_ENV === "production";
-  const buildAllBrands = !targetBrand || targetBrand === "all";
+
+  // In development, always build all brands for theme switching
+  // In production, respect BIGLIGHT_BRAND value
+  const buildAllBrands = !isProduction || !targetBrand || targetBrand === "all";
 
   console.log("\n" + "=".repeat(60));
   console.log("🏗️  BIGLIGHT TOKEN BUILD");
@@ -119,6 +122,16 @@ async function runBuild() {
   }
 
   console.log("\n" + "=".repeat(60) + "\n");
+
+  // Generate style imports after tokens are built
+  console.log("📝 Generating style imports...\n");
+  try {
+    const { execSync } = await import("child_process");
+    execSync("node generate-style-imports.js", { stdio: "inherit" });
+  } catch (err) {
+    console.error("❌ Failed to generate style imports:", err.message);
+    process.exit(1);
+  }
 }
 
 runBuild();

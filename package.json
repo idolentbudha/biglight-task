@@ -3,10 +3,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "env-cmd npm run build:tokens && npm run build:style && vite build",
+    "build": "npm run build:tokens && vite build",
     "preview": "vite preview",
     "build:tokens": "env-cmd node build-tokens.js",
-    "build:style": "env-cmd node generate-style-imports.js",
+    "postinstall": "npm run build:tokens",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

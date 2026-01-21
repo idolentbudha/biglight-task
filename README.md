@@ -1,10 +1,53 @@
-# Design Tokens Pipeline
+# Biglight Multi-Brand Design System
 
-This project uses **Style Dictionary v5** to transform Figma-exported JSON tokens into themeable CSS variables. It is architected as a **Hybrid Transformation Pipeline**, allowing for multi-brand scaling and instant theme-switching in Storybook.
+This project uses **Vite + Preact** with **Style Dictionary v5** to transform Figma-exported JSON tokens into themeable CSS variables. It supports multi-brand theming with runtime switching and production-optimized single-brand builds.
 
-# Design Tokens Pipeline:
+## 🚀 Quick Start
 
-## 🏗 Architecture
+```bash
+# 1. Install dependencies (automatically runs build:tokens)
+npm install
+
+# 2. Start development server
+npm run dev
+
+# 3. View Storybook with theme switcher
+npm run storybook
+```
+
+## 📋 Available Scripts
+
+- `npm run dev` - Start Vite dev server with HMR
+- `npm run build` - Production build (auto-generates tokens + bundles)
+- `npm run build:tokens` - Manually regenerate CSS from design tokens
+- `npm run preview` - Preview production build
+- `npm run storybook` - Start Storybook on port 6006
+
+## 🎨 Design Token Workflow
+
+### When Design Tokens Change
+
+```bash
+# 1. Designer exports new tokens from Figma
+# 2. Replace tokens-custom/figma-tokens.json
+# 3. Regenerate CSS
+npm run build:tokens
+
+# 4. Tokens are now available in build/css/ and auto-imported
+```
+
+**Note**: `build/css/` is **gitignored** (auto-generated from JSON). `src/style.css` brand imports section is auto-updated.
+
+### Token Architecture (4-Layer Model)
+
+| Layer                     | Scope                    | Purpose                    | Example                                         |
+| ------------------------- | ------------------------ | -------------------------- | ----------------------------------------------- |
+| **L0: Global Primitives** | `:root`                  | Shared foundational values | Grey scale, spacing, radii                      |
+| **L1: Brand Primitives**  | `[data-theme="brand-x"]` | Brand-owned values         | Brand colors, fonts                             |
+| **L2: Alias/Semantic**    | `[data-theme="brand-x"]` | Meaning, not usage         | `color-primary`, `color-text-default`           |
+| **L3: Mapped**            | `[data-theme="brand-x"]` | Component-ready tokens     | `surface-action-primary`, `text-action-primary` |
+
+## 🏗 Architecture Overview
 
 The pipeline addresses the gap between Figma's nested structure and production-ready CSS through three main stages:
 
