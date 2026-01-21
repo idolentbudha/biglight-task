@@ -2,7 +2,7 @@ name: Build and Publish Storybook to GitHub Pages
 on:
   push:
     branches:
-      - 'exp-deploysb' # Use specific branch name
+      - 'main' # Use specific branch name
 permissions:
   contents: read
   pages: write
@@ -13,9 +13,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # environment:
-    #   name: github-pages
-    #   url: ${{ steps.deploy.outputs.page_url }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,10 +24,16 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm' # Adjust caching strategy and configuration if using other package managers
+          node-version: 'v22.18.0'
+          cache: 'npm' 
+      - name: Create .env file
+        run: |
+          echo "BIGLIGHT_BRAND=all" >> .env
+          echo "NODE_ENV=development" >> .env
       - name: Install dependencies
-        run: npm ci # Replace with appropriate command if using other package managers
+        run: npm ci --ignore-scripts 
+      - name: build css file from figma jsonm tokens
+        run: npm run build:tokens 
       - name: Build Storybook
         run: npm run build-storybook
       # Upload pages artifact
