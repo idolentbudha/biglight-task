@@ -3,6 +3,7 @@ import { Dropdown, DropdownProps } from "./index";
 import { useState } from "preact/hooks";
 import { StyledEngineProvider } from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 const sampleOptions = [
   { value: "option1", label: "Option 1" },
@@ -308,6 +309,26 @@ export const AllStates: Story = {
           placeholder="Select a country"
           required={true}
           options={countryOptions}
+        />
+      </div>
+      <div>
+        <h3 class="mb-4 text-base font-semibold text-text-heading">
+          Start Icon
+        </h3>
+        <p class="mb-2 text-xs text-text-passive">Shows start icon</p>
+        <br />
+        <Dropdown
+          label="Country"
+          placeholder="Select a country"
+          required={true}
+          options={countryOptions}
+          startIcon={
+            <AccessTimeIcon
+              className="px-1.5"
+              aria-label="Time selector"
+              role="img"
+            />
+          }
         />
       </div>
     </div>

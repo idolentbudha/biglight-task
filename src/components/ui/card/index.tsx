@@ -13,7 +13,7 @@ export default function Card({
   children,
   className = "",
   variant = "elevated",
-  borderRadius = "2xl",
+  borderRadius = "xl",
 }: CardProps) {
   // Determine card styling based on variant
   const getVariantClasses = () => {
@@ -53,7 +53,7 @@ export default function Card({
 
   return (
     <MuiCard className={cardClasses}>
-      <CardContent className="p-6">
+      <CardContent>
         {children && <div className="text-text-body">{children}</div>}
       </CardContent>
     </MuiCard>

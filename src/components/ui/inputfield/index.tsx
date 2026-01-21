@@ -20,6 +20,7 @@ export interface InputFieldProps {
   name?: string;
   type?: "text" | "email" | "password" | "number" | "tel" | "url";
   required?: boolean;
+  showStateIcon?: boolean;
   onChange?: (value: string) => void;
   onBlur?: () => void;
   onFocus?: () => void;
@@ -35,6 +36,7 @@ export function InputField({
   name,
   type = "text",
   required = false,
+  showStateIcon = true,
   onChange,
   onBlur,
   onFocus,
@@ -53,6 +55,11 @@ export function InputField({
     // if (state === "success") return "border-positive";
     if (isFocused) return "border-3 border-border-secondary";
     return "border-border-passive";
+  };
+
+  const getLabelColor = () => {
+    if (isFocused || isFilled) return "text-text-body";
+    return "text-text-disabled";
   };
 
   // Determine helper text color
@@ -102,8 +109,7 @@ export function InputField({
         {label && (
           <InputLabel
             htmlFor={inputId}
-            // style={{ color: "var(--text-colour-body)" }}
-            className={`${disabled ? "text-text-disabled" : state === "error" ? "text-text-error" : "text-text-body"} font-medium`}
+            className={`${getLabelColor()} font-normal text-base`}
           >
             {label}
           </InputLabel>
@@ -132,23 +138,25 @@ export function InputField({
             },
           }}
           endAdornment={
-            <InputAdornment position="end">
-              {state === "success" ? (
-                <CheckIcon
-                  className={`fill-icon-positive`}
-                  aria-label="Input is valid"
-                  role="img"
-                />
-              ) : (
-                <CloseIcon
-                  className={`${disabled ? "fill-icon-action-disabled" : state === "error" ? "fill-icon-error" : "fill-icon-action-active"} transition-colors`}
-                  aria-label={
-                    state === "error" ? "Error in input" : "Clear input"
-                  }
-                  role="img"
-                />
-              )}
-            </InputAdornment>
+            showStateIcon && (
+              <InputAdornment position="end">
+                {state === "success" ? (
+                  <CheckIcon
+                    className={`fill-icon-positive`}
+                    aria-label="Input is valid"
+                    role="img"
+                  />
+                ) : (
+                  <CloseIcon
+                    className={`${disabled ? "fill-icon-action-disabled" : state === "error" ? "fill-icon-error" : "fill-icon-action-active"} transition-colors`}
+                    aria-label={
+                      state === "error" ? "Error in input" : "Clear input"
+                    }
+                    role="img"
+                  />
+                )}
+              </InputAdornment>
+            )
           }
         />
         <FormHelperText id={`${inputId}-helper-text`}>

@@ -5,7 +5,8 @@ import Typography from "@/components/ui/typography";
 import Dropdown from "@/components/ui/dropdown";
 import InputField from "@/components/ui/inputfield";
 import Button from "@/components/ui/button";
-import { DEFAULT_BRAND, IS_MULTI_BRAND } from "@/brand-config";
+import { DEFAULT_BRAND } from "@/brand-config";
+import CloseIcon from "@mui/icons-material/Close";
 
 export function Login() {
   const [currentTheme, setCurrentTheme] = useState(DEFAULT_BRAND);
@@ -30,7 +31,7 @@ export function Login() {
   };
 
   return (
-    <div class="min-h-screen bg-page p-8">
+    <div class="min-h-screen bg-page">
       {/* Skip to main content link for keyboard users */}
       <a
         href="#main-content"
@@ -39,26 +40,43 @@ export function Login() {
         Skip to main content
       </a>
 
-      <main id="main-content" role="main" className={"w-xl mx-auto my-auto"}>
-        <Typography variant="h1" className="!text-primary mt-6 mb-7">
-          Log into your <br /> account.
-        </Typography>
-        <Typography className="!text-inverse mb-5">
-          Please enter your email for a one-time-only code
-        </Typography>
+      <main
+        id="main-content"
+        role="main"
+        class={"px-20 sm:px-48 py-20 md:max-w-[480px] md:mx-auto"}
+      >
+        <div className={"w-[100%] flex justify-end my-24 px-2"}>
+          <CloseIcon className={`fill-icon-action-active`} role="button" />
+        </div>
+        <div className={"flex flex-col gap-5 mb-7"}>
+          <Typography variant="h1" className="!text-primary" weight="regular">
+            Log into your <br className="hidden md:inline" />
+            account
+          </Typography>
+          <Typography className="!text-inverse">
+            Please enter your email for a one-time-only code
+          </Typography>
+        </div>
 
         <form
           onSubmit={handleSubmit}
           aria-label="Login form"
           className={"flex flex-col gap-7 mb-7"}
         >
-          <Dropdown options={[]} label="Select option" name="dropdown-option" />
+          <Dropdown
+            label="Customer type"
+            name="dropdown-option"
+            options={[
+              { label: "Individual", value: "individual" },
+              { label: "Business", value: "business" },
+            ]}
+          />
           <InputField
             label="Email"
             placeholder="Enter your email"
             type="email"
             name="email"
-            required
+            showStateIcon={false}
           />
 
           <div className="flex flex-col gap-5 mb-10">

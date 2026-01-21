@@ -5,8 +5,8 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { FormHelperText } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useKeyboardNav, getAriaDropdownProps } from "@/utils/accessibility";
+import Typography from "../typography";
 
 export interface DropdownOption {
   value: string | number;
@@ -22,6 +22,7 @@ export interface DropdownProps {
   name?: string;
   required?: boolean;
   options: DropdownOption[];
+  startIcon?: preact.JSX.Element;
   onChange?: (value: string | number) => void;
   onBlur?: () => void;
   onFocus?: () => void;
@@ -36,6 +37,7 @@ export function Dropdown({
   name,
   required = false,
   options = [],
+  startIcon,
   onChange,
   onBlur,
   onFocus,
@@ -44,7 +46,6 @@ export function Dropdown({
   const [isOpen, setIsOpen] = useState(false);
   const [internalValue, setInternalValue] = useState<string | number>("");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const selectRef = useRef<HTMLSelectElement>(null);
 
   // Use controlled value if provided, otherwise use internal state
   const value = controlledValue !== undefined ? controlledValue : internalValue;
@@ -57,6 +58,11 @@ export function Dropdown({
     if (isFocused) return "border-3 border-border-secondary"; // State: Focus
     if (isSelected) return "border-3 border-border-secondary"; // State: Selected
     return "var(--border-colour-passive)"; // State: Default
+  };
+
+  const getLabelColor = () => {
+    if (isOpen || isFocused || isSelected) return "text-text-body";
+    return "text-text-disabled";
   };
 
   const getBorderWidth = () => {
@@ -174,7 +180,7 @@ export function Dropdown({
         {label && (
           <InputLabel
             id={`${selectId}-label`}
-            className={`${disabled ? "text-text-disabled" : "text-text-body"} font-medium`}
+            className={`${getLabelColor()} font-normal`}
           >
             {label}
           </InputLabel>
@@ -191,7 +197,6 @@ export function Dropdown({
           onOpen={handleOpen}
           onClose={handleClose}
           disabled={disabled}
-          displayEmpty={!!placeholder}
           tabIndex={disabled ? -1 : 0}
           inputProps={{
             "aria-expanded": ariaProps["aria-expanded"] === "true",
@@ -209,6 +214,7 @@ export function Dropdown({
               }`}
               aria-label={isOpen ? "Collapse options" : "Expand options"}
               role="img"
+              fontSize={"medium"}
             />
           )}
           slotProps={{
@@ -217,13 +223,7 @@ export function Dropdown({
             },
             notchedOutline: { className: `border-2 ${getBorderColor()} ` },
           }}
-          startAdornment={
-            <AccessTimeIcon
-              className="px-1.5"
-              aria-label="Time selector"
-              role="img"
-            />
-          }
+          startAdornment={startIcon}
           renderValue={(selected) => {
             if (selected === "" || selected === undefined) {
               return <em class="text-text-passive px-4">{placeholder}</em>;

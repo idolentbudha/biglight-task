@@ -19,7 +19,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "A flexible typography component that provides consistent text styling across the application. Supports multiple variants (h1-h6, body, small, caption), sizes, colors, weights, and alignment options. Works alongside semantic HTML base styles.",
+          "A flexible, responsive typography component with consistent text styling across the application. All headings scale across 3 breakpoints: mobile (default) → tablet (md: 768px+) → desktop (lg: 1024px+). Body text scales from mobile to desktop. Supports multiple variants (h1-h6, body, small, caption), sizes, colors, weights, and alignment options.",
       },
     },
   },
@@ -79,7 +79,8 @@ export const Heading1: Story = {
   parameters: {
     docs: {
       description: {
-        story: "H1 heading - largest heading size.",
+        story:
+          "H1 heading - largest heading size. Scales from text-3xl (mobile) → text-5xl (tablet) → text-7xl (desktop).",
       },
     },
   },
@@ -93,7 +94,8 @@ export const Heading2: Story = {
   parameters: {
     docs: {
       description: {
-        story: "H2 heading - second level heading.",
+        story:
+          "H2 heading - second level heading. Scales from text-2xl (mobile) → text-4xl (tablet) → text-6xl (desktop).",
       },
     },
   },
@@ -107,7 +109,8 @@ export const Heading3: Story = {
   parameters: {
     docs: {
       description: {
-        story: "H3 heading - third level heading.",
+        story:
+          "H3 heading - third level heading. Scales from text-xl (mobile) → text-3xl (tablet) → text-5xl (desktop).",
       },
     },
   },
@@ -122,7 +125,8 @@ export const Body: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Body text with default styling.",
+        story:
+          "Body text with default styling. Scales from text-sm (mobile) → text-base (desktop).",
       },
     },
   },
@@ -287,8 +291,12 @@ export const AllVariants: Story = {
     <div class="p-8 bg-surface-page rounded-lg space-y-12 max-w-[800px]">
       <div>
         <h3 class="mb-4 text-base font-semibold text-text-heading">
-          Heading Variants
+          Heading Variants (Responsive)
         </h3>
+        <p class="mb-4 text-sm text-text-passive">
+          Headings scale from mobile → tablet (md:) → desktop (lg:). Resize
+          browser to see responsive behavior.
+        </p>
         <div class="space-y-4">
           <Typography variant="h1">Heading 1</Typography>
           <Typography variant="h2">Heading 2</Typography>
@@ -301,8 +309,11 @@ export const AllVariants: Story = {
 
       <div>
         <h3 class="mb-4 text-base font-semibold text-text-heading">
-          Body Text Sizes
+          Body Text Sizes (Responsive)
         </h3>
+        <p class="mb-4 text-sm text-text-passive">
+          Body text scales on mobile (sm) → desktop (md:). Resize to see.
+        </p>
         <div class="space-y-2">
           <Typography variant="body" size="lg">
             Large body text - Used for emphasis or improved readability
@@ -396,7 +407,76 @@ export const AllVariants: Story = {
     docs: {
       description: {
         story:
-          "Comprehensive showcase of all typography variants, sizes, colors, weights, and alignments.",
+          "Comprehensive showcase of all typography variants, sizes, colors, weights, and alignments. Headings have 3-breakpoint responsive scaling (mobile/tablet/desktop) and body text scales from mobile to desktop.",
+      },
+    },
+  },
+};
+
+// Responsive showcase
+export const ResponsiveScale: Story = {
+  render: () => (
+    <div class="p-8 bg-surface-page rounded-lg space-y-8 max-w-[1200px]">
+      <div>
+        <Typography variant="h3" className="mb-4">
+          Responsive Typography Scale
+        </Typography>
+        <Typography variant="body" color="passive" className="mb-6">
+          Resize your browser window to see how typography scales across
+          breakpoints: mobile (default) → tablet (md: 768px+) → desktop (lg:
+          1024px+)
+        </Typography>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8">
+        <div class="border border-border-passive rounded-lg p-6">
+          <Typography variant="h1" className="mb-2">
+            Heading 1 Responsive
+          </Typography>
+          <Typography variant="small" color="passive">
+            Mobile: 3xl (30px) | Tablet (md:): 5xl (48px) | Desktop (lg:): 7xl
+            (72px)
+          </Typography>
+        </div>
+
+        <div class="border border-border-passive rounded-lg p-6">
+          <Typography variant="h2" className="mb-2">
+            Heading 2 Responsive
+          </Typography>
+          <Typography variant="small" color="passive">
+            Mobile: 2xl (24px) | Tablet (md:): 4xl (36px) | Desktop (lg:): 6xl
+            (60px)
+          </Typography>
+        </div>
+
+        <div class="border border-border-passive rounded-lg p-6">
+          <Typography variant="h3" className="mb-2">
+            Heading 3 Responsive
+          </Typography>
+          <Typography variant="small" color="passive">
+            Mobile: xl (20px) | Tablet (md:): 3xl (30px) | Desktop (lg:): 5xl
+            (48px)
+          </Typography>
+        </div>
+
+        <div class="border border-border-passive rounded-lg p-6">
+          <Typography variant="body" className="mb-2">
+            Body text is also responsive, scaling from small on mobile to base
+            size on desktop for better readability across devices.
+          </Typography>
+          <Typography variant="small" color="passive">
+            Mobile: sm (14px) | Desktop (md:): base (16px)
+          </Typography>
+        </div>
+      </div>
+    </div>
+  ),
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        story:
+          "Interactive demonstration of responsive typography scaling. All headings scale across 3 breakpoints (mobile/tablet/desktop) and body text scales from mobile to desktop. Resize browser to see live changes.",
       },
     },
   },
