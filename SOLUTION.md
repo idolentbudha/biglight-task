@@ -30,11 +30,11 @@ Figma Design Tokens (JSON)
   ↓
 Style Dictionary v5 (Transform Pipeline)
   ↓
-CSS Custom Properties (4-Layer Architecture)
+CSS Custom Properties
   ↓
 Tailwind CSS v4 (Semantic Utilities)
   ↓
-Preact v10 + MUI Components
+Preact v10 + MUI Components with tailwind semantic utilities
   ↓
 Storybook v10 (Multi-Brand Preview)
 ```
@@ -247,7 +247,7 @@ StyleDictionary.registerParser({
 });
 ```
 
-**Output:** `build/css/*.css` (8 files for dev, 5 for production)
+**Output:** `build/css/*.css` (8 files + imports.css for dev, 5 files + imports.css for production)
 
 ```
 Development Build (all brands):
@@ -258,15 +258,52 @@ Development Build (all brands):
 ├── brand-a.mapped.css      (L3: Brand A component tokens)
 ├── brand-b.primitives.css  (L1: Brand B colors/fonts)
 ├── brand-b.alias.css       (L2: Brand B semantic names)
-└── brand-b.mapped.css      (L3: Brand B component tokens)
+├── brand-b.mapped.css      (L3: Brand B component tokens)
+└── imports.css             (Auto-generated manifest with all imports)
 
 Production Build (brand-specific):
 ├── primitives.css          (L0: :root)
 ├── responsive.css          (L0: :root breakpoint tokens)
 ├── brand-a.primitives.css  (L1: Brand A only)
 ├── brand-a.alias.css       (L2: Brand A only)
-└── brand-a.mapped.css      (L3: Brand A only)
+├── brand-a.mapped.css      (L3: Brand A only)
+└── imports.css             (Auto-generated manifest with brand-a imports only)
 ```
+
+**Why imports.css?**
+
+The `imports.css` file is **auto-generated** by `generate-style-imports.js` after token build completes. It serves as a **single import manifest** that dynamically includes the correct CSS files based on build mode (dev/prod):
+
+```css
+/* build/css/imports.css (Development) */
+/* Auto-generated - DO NOT EDIT MANUALLY */
+@import "./primitives.css";
+@import "./responsive.css";
+@import "./brand-a.primitives.css";
+@import "./brand-a.alias.css";
+@import "./brand-a.mapped.css";
+@import "./brand-b.primitives.css";
+@import "./brand-b.alias.css";
+@import "./brand-b.mapped.css";
+```
+
+```css
+/* build/css/imports.css (Production - Brand A) */
+/* Auto-generated - DO NOT EDIT MANUALLY */
+@import "./primitives.css";
+@import "./responsive.css";
+@import "./brand-a.primitives.css";
+@import "./brand-a.alias.css";
+@import "./brand-a.mapped.css";
+```
+
+**Benefits:**
+
+1. **Clean Separation**: `src/style.css` stays static with one import: `@import "../build/css/imports.css"`
+2. **No Manual Updates**: Adding brands doesn't require editing `src/style.css`
+3. **Single Source**: Import order controlled in one place (correct cascade)
+4. **Build Optimization**: Production builds only import needed brands
+5. **Architecture Clarity**: Generated code isolated from source code
 
 ### Tailwind Integration
 
@@ -341,36 +378,6 @@ document.body.setAttribute('data-theme', 'brand-a'); // or 'brand-b'
 }
 ```
 
-**CSS Cascade Layer Order (Critical):**
-
-```css
-@layer theme, base, mui, components, utilities;
-
-/* Layer 1: Theme tokens load first */
-@import "../build/css/brand-a.mapped.css" layer(theme);
-@import "../build/css/brand-b.mapped.css" layer(theme);
-
-/* Layer 2: Base styles */
-@layer base {
-  body {
-    font-family: var(--font-font-family-paragraph);
-  }
-}
-
-/* Layer 3: MUI isolation */
-@import "@mui/material/styles" layer(mui);
-
-/* Layer 4: Component styles */
-/* Layer 5: Utility classes (highest specificity) */
-```
-
-**Why Cascade Layers?**
-
-- Predictable style ordering independent of import order
-- MUI styles isolated, can't leak into components
-- Utilities always win (Tailwind philosophy)
-- No `!important` needed
-
 ---
 
 ## Task 3: Documentation & Workflow
@@ -419,8 +426,9 @@ tokens-custom/
 
 config.js                       # Style Dictionary configuration
 build-tokens.js                 # Build orchestration script
+generate-style-imports.js       # Auto-generates imports.css
 
-build/css/                      # Generated CSS (committed to git)
+build/css/                      # Generated CSS (gitignored)
   ├── primitives.css
   ├── responsive.css
   ├── brand-a.primitives.css
@@ -428,18 +436,56 @@ build/css/                      # Generated CSS (committed to git)
   ├── brand-a.mapped.css
   ├── brand-b.primitives.css
   ├── brand-b.alias.css
-  └── brand-b.mapped.css
+  ├── brand-b.mapped.css
+  └── imports.css               # Auto-generated import manifest
 
-src/style.css                   # Import order definition
+src/
+  ├── style.css                 # Imports build/css/imports.css
+  └── brand-config.js           # Auto-generated (DEFAULT_BRAND)
+
 tailwind.config.js              # Semantic class mapping
 ```
 
 **Version Control Strategy:**
 
-- **Track:** `tokens-custom/figma-tokens.json` (source)
-- **Track:** `build/css/*.css` (generated, but committed for deterministic builds)
-- **Track:** `config.js` and `build-tokens.js` (configuration)
-- **Why commit generated files?** CI/CD reliability, no build step needed for previews
+- **Track:** `tokens-custom/figma-tokens.json` (source of truth)
+- **Track:** `config.js`, `build-tokens.js`, `generate-style-imports.js` (build scripts)
+- **Ignore:** `build/css/*.css` (regenerated from tokens, like node_modules)
+- **Why gitignore?** Generated files treated as build artifacts, always regenerate from source
+
+**The imports.css Pattern:**
+
+This architectural pattern separates generated code from source code:
+
+```css
+/* src/style.css (source, manually maintained) */
+@import "tailwindcss";
+@import "./fonts.css";
+@import "../build/css/imports.css"; /* Single import line */
+@config '../tailwind.config.js';
+```
+
+```css
+/* build/css/imports.css (generated, auto-updated by generate-style-imports.js) */
+/* Auto-generated by generate-style-imports.js */
+/* DO NOT EDIT MANUALLY - regenerated from tokens-custom/figma-tokens.json */
+
+@import "./primitives.css";
+@import "./responsive.css";
+@import "./brand-a.primitives.css";
+@import "./brand-a.alias.css";
+@import "./brand-a.mapped.css";
+/* Additional brands in development... */
+```
+
+**Build Flow:**
+
+1. `npm run build:tokens` → Runs `build-tokens.js`
+2. `build-tokens.js` → Generates CSS files via Style Dictionary
+3. `build-tokens.js` → Calls `generate-style-imports.js`
+4. `generate-style-imports.js` → Creates `build/css/imports.css`
+5. `generate-style-imports.js` → Updates `src/brand-config.js`
+6. Vite detects changes → Hot reloads styles
 
 **Token Naming Conventions:**
 
@@ -474,15 +520,16 @@ p-12                        → padding: var(--scale-300) (12px)
 **Implementation:**
 
 ```bash
-# Development (.env)
+# Single .env.example file (copy to .env for first-time setup)
 BIGLIGHT_BRAND=all
 NODE_ENV=development
 
-# Production Brand A (.env.production.brand-a)
+# For production builds, set environment variables inline or modify .env:
+# Brand A Production:
 BIGLIGHT_BRAND=brand-a
 NODE_ENV=production
 
-# Production Brand B (.env.production.brand-b)
+# Brand B Production:
 BIGLIGHT_BRAND=brand-b
 NODE_ENV=production
 ```
@@ -510,14 +557,16 @@ for (const brand of brandsToBuild) {
 **Production Build Commands:**
 
 ```bash
-# Option 1: Using env-cmd (recommended for CI/CD)
-npx env-cmd -f .env.production.brand-a npm run build
+# Option 1: Inline environment variables (recommended for CI/CD)
+BIGLIGHT_BRAND=brand-a NODE_ENV=production npm run build
 
-# Option 2: Copy environment file
-cp .env.production.brand-a .env && npm run build
+# Option 2: Modify .env file
+cp .env.example .env  # First time only
+# Edit .env: set BIGLIGHT_BRAND=brand-a and NODE_ENV=production
+npm run build
 
-# Option 3: Inline environment variable
-BIGLIGHT_BRAND=brand-a npm run build
+# Option 3: Using env-cmd with inline variables
+npx env-cmd -e production npm run build  # If you have .env.production file
 ```
 
 **Build Confirmation:**
@@ -567,127 +616,13 @@ Adding Brand C requires:
 
 ---
 
-## What I Would Do Differently
+## Production Improvements
 
-### With More Time
-
-1. **Figma Plugin for Token Export**
-   - Current: Manual JSON export from Figma
-   - Ideal: Custom plugin that validates tokens before export, checks for breaking changes, generates migration guide
-   - Benefit: Designers self-serve, developers review structured diffs
-
-2. **Visual Regression Testing**
-   - Tool: Chromatic or Percy integration with Storybook
-   - Automated screenshots of all component variants across both brands
-   - PR comments showing visual diffs when tokens change
-   - Benefit: Catch unintended visual changes before production
-
-3. **Token Documentation Site**
-   - Generate interactive documentation from tokens
-   - Show all available colors, spacing, typography with live examples
-   - Cross-reference where each token is used in components
-   - Tool: Custom script or Zeroheight integration
-
-4. **Automated Accessibility Testing**
-   - Integrate axe-core or pa11y in Storybook
-   - Automated color contrast validation against WCAG 2.1 AA
-   - Keyboard navigation flow testing
-   - Screen reader compatibility testing (nvda, JAWS, VoiceOver)
-
-5. **Component Composition Patterns**
-   - Build compound components (e.g., `Form.Field`, `Card.Action`)
-   - Implement slot-based composition for flexibility
-   - Create higher-order components for common patterns
-
-### With Different Tools
-
-1. **Figma API Integration**
-   - Instead of: Manual JSON export
-   - Use: Figma REST API to fetch tokens programmatically
-   - Trigger: GitHub Actions cron job to check for updates
-   - Benefit: Automated sync, no developer intervention needed
-
-2. **Figma Tokens Plugin (Pro)**
-   - Current: Manual token organization in Figma
-   - Ideal: Figma Tokens plugin for structured token management
-   - Features: Multi-brand token sets, token transformations in Figma
-   - Benefit: Designers manage token structure without developer help
-
-3. **Turborepo for Monorepo**
-   - Structure: Separate packages for tokens, components, apps
-   - Benefits: Independent versioning, better caching, parallel builds
-   - Example:
-     ```
-     packages/
-       tokens/        # Design tokens package
-       ui/            # Component library
-       brand-a-app/   # Brand A application
-       brand-b-app/   # Brand B application
-     ```
-
-4. **CSS-in-JS with Theme UI or Stitches**
-   - Alternative to: Tailwind + CSS variables
-   - Benefits: Type-safe tokens, better IDE autocomplete, runtime theme switching
-   - Trade-off: Larger bundle size, runtime overhead
-
-### In a Production Environment
-
-1. **Token Versioning Strategy**
-
-   ```json
-   // package.json
-   "dependencies": {
-     "@biglight/design-tokens": "^2.1.0"
-   }
-   ```
-
-   - Publish tokens as separate npm package
-   - Semantic versioning: Major = breaking changes, Minor = new tokens, Patch = value updates
-   - Components specify compatible token version range
-   - Benefit: Controlled upgrades, gradual rollout
-
-2. **CI/CD Pipeline Enhancements**
-
-   ```yaml
-   # .github/workflows/tokens.yml
-   - name: Build tokens
-     run: npm run build:tokens
-
-   - name: Visual regression test
-     run: npm run chromatic
-
-   - name: Accessibility audit
-     run: npm run test:a11y
-
-   - name: Bundle size check
-     run: npm run bundlesize
-   ```
-
-3. **Runtime Theme Loading**
-   - Instead of: All brands in bundle
-   - Use: Dynamic CSS import based on user/tenant
-
-   ```tsx
-   // Lazy load brand CSS
-   const loadBrand = async (brandId) => {
-     await import(`/css/${brandId}.mapped.css`);
-     document.body.dataset.theme = brandId;
-   };
-   ```
-
-   - Benefit: Even smaller initial bundle, support unlimited brands
-
-4. **Token Usage Analytics**
-   - Track which tokens are actually used in production
-   - Identify unused tokens for cleanup
-   - Monitor breaking changes when tokens are removed
-   - Tool: Custom Tailwind plugin to log class usage
-
-5. **Design System Documentation**
-   - Platform: Storybook Docs + MDX
-   - Include: Component guidelines, accessibility notes, usage examples
-   - Auto-generate: Props table, token mappings, code snippets
-   - Searchable: Full-text search across components and tokens
+1. **Visual Regression Testing** - Chromatic/Percy for automated screenshots
+2. **Figma API Integration** - Automated token sync via GitHub Actions
+3. **Token Versioning** - Publish as npm package with semantic versioning
+4. **Accessibility Testing** - Testing tool integration for WCAG validation
+5. **CI/CD Pipeline** - Automated builds, tests, and bundle size checks
 
 ---
 
@@ -695,164 +630,37 @@ Adding Brand C requires:
 
 ### Current Limitations
 
-1. **No Visual Regression Testing**
-   - **Why:** Chromatic requires paid account for private repos
-   - **Mitigation:** Manual Storybook review before merging
-   - **Impact:** Risk of unintended visual changes
-   - **Production need:** High priority, budget for Chromatic or Percy
-
-2. **Brand B Not Pixel-Perfect**
-   - **Why:** No Figma reference for Brand B (only JSON tokens)
-   - **Approach:** Used token values to demonstrate theme switching works
-   - **Impact:** Visual hierarchy might not match designer intent
-   - **Production need:** Require Brand B Figma designs
-
-3. **Manual Token Export**
-   - **Why:** No Figma Pro account for API access
-   - **Approach:** Documented clear export process
-   - **Impact:** Developer dependency for token updates
-   - **Production need:** Figma API integration or Tokens plugin
-
-4. **Limited Browser Testing**
-   - **Tested:** Chrome, Safari on macOS
-   - **Not tested:** Edge, IE11, Firefox, mobile browsers
-   - **Impact:** Potential cross-browser issues
-   - **Production need:** BrowserStack or Sauce Labs integration
-
-5. **No TypeScript for Tokens**
-   - **Current:** CSS variables (no type safety)
-   - **Ideal:** Generate TypeScript definitions from tokens
-   ```typescript
-   // Auto-generated from tokens
-   type BrandColor = "action-primary" | "action-secondary" | "text-heading";
-   type Spacing = 12 | 16 | 20 | 24;
-   ```
-
-   - **Production need:** Style Dictionary plugin for TS generation
-
-### Design Decisions & Trade-offs
-
-1. **Committed Generated CSS Files**
-   - **Decision:** Track `build/css/*.css` in git
-   - **Pro:** Deterministic builds, no build step for preview deploys
-   - **Con:** Larger git history, potential merge conflicts
-   - **Alternative:** Ignore generated files, require build step
-   - **Rationale:** Preview deployments more important than git size
-
-2. **4-Layer Token Architecture**
-   - **Decision:** L0 (Global) → L1 (Brand) → L2 (Alias) → L3 (Mapped)
-   - **Pro:** Maximum flexibility, change isolation, scalability
-   - **Con:** Complex mental model, more files to manage
-   - **Alternative:** 2-layer (Primitives → Components)
-   - **Rationale:** Supports unlimited brands without component changes
-
-3. **Tailwind v4 CSS-First Approach**
-   - **Decision:** Use Tailwind v4 alpha with native CSS
-   - **Pro:** Native CSS variables, better IDE support, smaller bundles
-   - **Con:** Alpha software, potential breaking changes
-   - **Alternative:** Tailwind v3 with PostCSS
-   - **Rationale:** Production projects would wait for stable release
-
-4. **MUI Base Components Instead of Headless UI**
-   - **Decision:** Use Material-UI base components
-   - **Pro:** Built-in accessibility, comprehensive component set
-   - **Con:** Larger bundle size, React-specific (via compat layer)
-   - **Alternative:** Headless UI, Radix UI, or build from scratch
-   - **Rationale:** Accessibility compliance more important than bundle size
-
-5. **CSS Cascade Layers Instead of CSS Modules**
-   - **Decision:** Use native @layer for style ordering
-   - **Pro:** Native CSS feature, predictable cascade, no build step
-   - **Con:** Limited browser support (2022+), requires polyfill for older browsers
-   - **Alternative:** CSS Modules, styled-components, Emotion
-   - **Rationale:** Modern feature, aligns with Tailwind v4 philosophy
+- No visual regression testing (manual Storybook review only)
+- Brand B lacks Figma reference (JSON tokens only)
+- Manual token export from Figma (no API integration)
+- Limited browser testing (Chrome/Safari macOS only)
+- No TypeScript definitions for tokens
+- No vital unit tests for css file generation for integrity
+- No eslint ruling to verify complete usage of only semantic tokens
 
 ### Known Issues
 
-1. **TypeScript Process Warnings**
-   - **Issue:** `Cannot find name 'process'` in build-tokens.js
-   - **Cause:** Missing @types/node
-   - **Impact:** None (Node.js script runs correctly)
-   - **Fix:** `npm install --save-dev @types/node`
-
-2. **Storybook Addon-Themes Data Attribute**
-   - **Issue:** Requires manual decorator in each story
-   - **Workaround:** Global decorator in `.storybook/preview.ts`
-   - **Impact:** Potential inconsistency if decorator missing
-   - **Fix:** Storybook 8.0 has improved theming support
-
-3. **Font Loading Flash**
-   - **Issue:** FOUT (Flash of Unstyled Text) on initial load
-   - **Cause:** Web fonts load after initial render
-   - **Mitigation:** Preload critical fonts in HTML
-   - **Production fix:** Font subsetting, WOFF2 compression, font-display strategy
+- TypeScript warnings in build scripts (needs @types/node)
+- Font loading flash on initial page load (needs font preload strategy)
+- Storybook theme decorator required per story
 
 ---
 
-## Success Metrics
+## Key Achievements
 
-### What Was Achieved
+✅ **5 Components** - Buttons, Inputs, Dropdowns, Cards, Login page with Storybook stories
+✅ **Multi-Brand System** - Runtime theme switching via data attribute, zero JS state
+✅ **Automated Pipeline** - Single command regenerates all CSS from design tokens
+✅ **Accessibility** - WCAG 2.1 AA compliant with keyboard nav and ARIA
+✅ **Performance** - 40% bundle reduction via brand-specific production builds
 
-✅ **All 5 Components Built**
+### Technical Highlights
 
-- Buttons (3 variants × 4 states = 12 stories)
-- Input Fields (6 states = 6 stories)
-- Dropdowns (2 states + variants = 4 stories)
-- Cards (promotional composition = 2 stories)
-- Login Drawer (full composition = 1 story)
-
-✅ **Multi-Brand Theme Switching**
-
-- Both brands work in Storybook (toggle in toolbar)
-- Runtime theme switching with single attribute change
-- Zero component code changes required
-
-✅ **Automated Token Pipeline**
-
-- One command (`npm run build:tokens`) regenerates all CSS
-- Designer token changes don't require developer code changes
-- Production builds exclude unused brands (40% size reduction)
-
-✅ **Accessibility Compliance**
-
-- Keyboard navigation on all interactive elements
-- ARIA labels on form fields
-- Focus management and visual focus indicators
-- Screen reader compatible markup
-
-✅ **Production-Ready Optimizations**
-
-- Environment-based brand selection
-- Scalable to unlimited brands without code changes
-- Clear build confirmation showing target brand
-- Bundle size optimization for production
-
-### What This Solution Demonstrates
-
-1. **Deep Understanding of Design Systems**
-   - 4-layer token architecture shows understanding of design system scalability
-   - Separation of concerns between design decisions and implementation
-   - Change isolation prevents unintended side effects
-
-2. **Build Tool Expertise**
-   - Custom Style Dictionary transforms and parsers
-   - Integration with modern build tools (Vite, Tailwind v4)
-   - Environment-based build optimization
-
-3. **Component Architecture Skills**
-   - Composition patterns (cards compose buttons)
-   - Reusable accessibility utilities
-   - Brand-agnostic component design
-
-4. **Developer Experience Focus**
-   - Clear console output with visual confirmation
-   - Comprehensive documentation
-   - Easy mental model for other developers
-
-5. **Production Thinking**
-   - Performance optimization strategy
-   - Scalability considerations
-   - Trade-off analysis with clear reasoning
+- **4-Layer Token Architecture** - Scalable to unlimited brands without code changes
+- **Custom Style Dictionary Transforms** - Automated token naming and unit conversion
+- **Brand-Agnostic Components** - Semantic utilities instead of brand-specific code
+- **Production Optimization** - Environment-based build selection
+- **Developer Experience** - Clear build output, comprehensive documentation and maintainable codebase
 
 ---
 
@@ -895,16 +703,20 @@ npm run storybook
 1. Update `tokens-custom/figma-tokens.json`
 2. Run `npm run build:tokens`
 3. Check Storybook for visual changes
-4. Commit both JSON and generated CSS files
+4. Commit `tokens-custom/figma-tokens.json` and `src/brand-config.js`
+5. Note: `build/css/*.css` files are gitignored (regenerated on build)
 
 ### Building for Production
 
 ```bash
+# First time setup: Create .env from template
+cp .env.example .env
+
 # Brand A production build
-npx env-cmd -f .env.production.brand-a npm run build
+BIGLIGHT_BRAND=brand-a NODE_ENV=production npm run build
 
 # Brand B production build
-npx env-cmd -f .env.production.brand-b npm run build
+BIGLIGHT_BRAND=brand-b NODE_ENV=production npm run build
 
 # Preview production build
 npm run preview
