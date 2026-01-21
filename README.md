@@ -193,51 +193,8 @@ BIGLIGHT_BRAND=brand-a NODE_ENV=production npm run build
 
 **Result**: Only generates CSS for specified brand → 40% reduction in CSS bundle size.
 
-## ♿️ Accessibility Features
-
-This project follows **WCAG 2.1 Level AA** guidelines:
-
-### Keyboard Navigation
-
-- ✅ All interactive elements keyboard accessible
-- ✅ Disabled elements removed from tab order (`tabIndex={-1}`)
-- ✅ Custom hooks: `useKeyboardNav`, `handleActivation`
-- ✅ Arrow key navigation in Dropdown
-- ✅ Home/End/Escape key support
-
-### Screen Reader Support
-
-- ✅ Skip link: "Skip to main content"
-- ✅ Semantic HTML: `<main>`, `<form>`, proper heading hierarchy
-- ✅ ARIA attributes: `aria-label`, `aria-required`, `aria-invalid`
-- ✅ Alt text on all images
-
-### Visual Accessibility
-
-- ✅ Focus indicators on all interactive elements
-- ✅ Color contrast meets WCAG AA standards (token-based)
-- ✅ Responsive typography (3 breakpoints: mobile/tablet/desktop)
-- ✅ `.sr-only` utility for screen reader only content
-
-### Testing Tools
-
-- ✅ Storybook a11y addon pre-configured
-
-**To test**: Run `npm run storybook` and check the "Accessibility" tab in each story.
 
 ## 🛠 Troubleshooting
-
-### Token Collisions
-
-"Token Collision" warnings during build are **intentional** - they occur when brand-specific tokens override alias tokens (by design in the 4-layer architecture).
-
-### Reference Errors
-
-If the build fails with "Reference not found":
-
-1. Check that `fixReferenceStrings` regex in `config.js` accounts for your Figma folder names
-2. Verify token references use the flattened structure (e.g., `{primary}` not `{Colour.Primary}`)
-3. Run `npm run build:tokens` with verbose logging to see transformation steps
 
 ### Missing CSS Variables
 
@@ -256,20 +213,6 @@ If themes don't switch at runtime:
 2. Check browser DevTools → Elements → `<body data-theme="brand-a">`
 3. Ensure all brand CSS files are imported in `build/css/imports.css`
 4. Clear browser cache and hard refresh (Cmd+Shift+R)
-
-### Storybook Issues
-
-**Port 6006 in use**: Storybook will auto-switch to 6007
-**Stories not loading**: Check that components are in `src/` and use `.stories.tsx` suffix
-**Theme switcher not working**: Verify decorator is in `.storybook/preview.ts`
-
-## 📚 Key Documentation
-
-- **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - Comprehensive architecture docs for AI agents
-- **[config.js](config.js)** - Style Dictionary configuration with custom transforms
-- **[build-tokens.js](build-tokens.js)** - Main token build script (dev/prod logic)
-- **[generate-style-imports.js](generate-style-imports.js)** - Auto-generates imports.css
-- **[src/utils/accessibility/](src/utils/accessibility/)** - ARIA helpers and keyboard handlers
 
 ## 🤝 Contributing
 
